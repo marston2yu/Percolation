@@ -24,16 +24,15 @@ public class WeightedUF {
     }
 
     public boolean connected(int p, int q) {
-        if (p < 0 || p > n || q < 0 || q > n)
+        if (p < 0 || p >= n || q < 0 || q >= n)
             throw new IllegalArgumentException("p or q out of range.");
-
-        return find(p) == find(p);
+        return (find(p) == find(q));
     }
 
     public int count() { return count; }
 
     public int find(int p) {
-        if (p < 0 || p > n) throw new IllegalArgumentException("p out of range.");
+        if (p < 0 || p >= n) throw new IllegalArgumentException("p out of range.");
 
         // 查找根节点，每个节点的id即其父节点，查找过程中同时压缩路径
         while (id[p] != p) {
@@ -45,7 +44,7 @@ public class WeightedUF {
     }
 
     public void union(int p, int q) {
-        if (p < 0 || p > n || q < 0 || q > n)
+        if (p < 0 || p >= n || q < 0 || q >= n)
             throw new IllegalArgumentException("p or q out of range.");
         // 先查明是否为同一组成部分
         int rootp = find(p);
@@ -61,7 +60,7 @@ public class WeightedUF {
         count--;
     }
 
-    static void main() {
+    public static void main(String[] args) {
         // test
         int N = 10;
         WeightedUF wuf = new WeightedUF(N);
@@ -71,6 +70,7 @@ public class WeightedUF {
         while(p != q) {
             wuf.union(p, q);
             System.out.println("Component number: " + wuf.count());
+            System.out.println("Is 0 and N-1 connected: " + wuf.connected(0, N - 1));
             p = sc.nextInt();
             q = sc.nextInt();
         }
