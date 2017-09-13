@@ -5,12 +5,13 @@ import java.util.Scanner;
 public class Percolation {
 
     private WeightedUF wuf;
-    private boolean[] open;
+    private boolean[] open; // 开口标志
     private int N;
-    private int opensize;
+    private int opensize; // 记录开口数目
 
     public Percolation(int N) {
         this.N = N;
+        // 0代表第一个虚拟节点，N*N+1代表最后一个虚拟节点，1～N*N代表格子
         wuf = new WeightedUF(N * N + 2);
         open = new boolean[N * N];
         opensize = 0;
@@ -18,6 +19,7 @@ public class Percolation {
 
     public void open(int i, int j) {
         if (isOpen(i, j)) return;
+
         open[(i - 1) * N + j - 1] = true;
         opensize++;
         // 将第一行开口与第一个虚拟节点连接，最后一行与最后一个虚拟节点连接
@@ -28,6 +30,7 @@ public class Percolation {
 
     // 连接第i行第j列和第p行第q列元素
     private void connect(int i, int j, int p, int q) {
+        // 校验是否为相邻格子
         if (Math.abs(i - p) + Math.abs(j - q) != 1)
             throw new IllegalArgumentException("illegal connect");
         wuf.union((i - 1) * N + j, (p - 1) * N + q);
@@ -59,10 +62,13 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        Percolation p = new Percolation(5);
+        // 获取输入，为（i，j）格子开口
         Scanner sc = new Scanner(System.in);
         int i = sc.nextInt();
         int j = sc.nextInt();
+
+        // 测试导通和开口数
+        Percolation p = new Percolation(5);
         while(i != 0 && j != 0) {
             p.open(i, j);
             System.out.println("Percolation status:" + p.percolate());

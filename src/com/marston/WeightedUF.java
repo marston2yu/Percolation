@@ -4,23 +4,23 @@ import java.util.Scanner;
 
 public class WeightedUF {
 
-    private int count;
+    private int componentNumber;
     private int n;
-    private int[] id;
-    private int[] size;
+    private int[] id; // id[i]即为i的父节点
+    private int[] sizeOfTree;  // 以i为根节点的数大小
 
     public WeightedUF(int n) {
         if (n < 0) throw new IllegalArgumentException("sites numbers < 0.");
 
         this.n = n;
         id = new int[n];
-        size = new int[n];
+        sizeOfTree = new int[n];
         // 初始化id[i]=i
         for (int i = 0; i < n; i++) {
             id[i] = i;
-            size[i] = 1;
+            sizeOfTree[i] = 1;
         }
-        count = n;
+        componentNumber = n;
     }
 
     public boolean connected(int p, int q) {
@@ -29,7 +29,7 @@ public class WeightedUF {
         return (find(p) == find(q));
     }
 
-    public int count() { return count; }
+    public int count() { return componentNumber; }
 
     public int find(int p) {
         if (p < 0 || p >= n) throw new IllegalArgumentException("p out of range.");
@@ -53,20 +53,22 @@ public class WeightedUF {
         if (rootp == rootq) return;
 
         // 判断两树大小，将小树根节点连接到大树根节点上，即小树并入大树中，以减小树高
-        if (size[rootp] < size[rootq]) { id[rootp] = rootq; size[rootq] += size[rootp]; }
-        else { id[rootq] = rootp; size[rootp] += size[rootq]; }
+        if (sizeOfTree[rootp] < sizeOfTree[rootq]) { id[rootp] = rootq; sizeOfTree[rootq] += sizeOfTree[rootp]; }
+        else { id[rootq] = rootp; sizeOfTree[rootp] += sizeOfTree[rootq]; }
 
         // 减少组成数目
-        count--;
+        componentNumber--;
     }
 
     public static void main(String[] args) {
-        // test
-        int N = 10;
-        WeightedUF wuf = new WeightedUF(N);
+        // 获取输入，连接p、q节点
         Scanner sc = new Scanner(System.in);
         int p = sc.nextInt();
         int q = sc.nextInt();
+
+        // 测试组件数目和首尾导通
+        int N = 10;
+        WeightedUF wuf = new WeightedUF(N);
         while(p != q) {
             wuf.union(p, q);
             System.out.println("Component number: " + wuf.count());
